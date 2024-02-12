@@ -1,0 +1,67 @@
+// ==UserScript==
+// @name         V3 Archana and Priyanka
+// @namespace    https://your.namespace.com
+// @version      1.0
+// @description  Bypass specified full XPath elements on page load, select contestants for voting, and click a button continuously
+// @author       Maverick
+// @match        https://www.galatta.com/dream-lover-2024/*
+// @grant        none
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
+    // XPath expressions of elements to be bypassed
+    var xpathExpressions = [
+        "/html/body/div[2]/section/div/div/div/div/div[3]",
+        "/html/body/div[2]/section/div/div/div/div/div[4]"
+    ];
+
+    // XPath expressions of contestants to be selected automatically
+    var contestant1XPath = '//*[@id="lbl_dream_crush200"]/img';
+    var contestant2XPath = '//*[@id="lbl_serial_actress77"]/img';
+
+    // XPath expression of the button to be clicked
+    var buttonXPath = "/html/body/div[2]/section/div/div/div/div/form/div[11]/button";
+
+    // Function to bypass elements based on XPath expressions
+    function bypassElements() {
+        xpathExpressions.forEach(function(xpath) {
+            var elements = document.evaluate(xpath, document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+            for (var i = 0; i < elements.snapshotLength; i++) {
+                var element = elements.snapshotItem(i);
+                element.parentNode.removeChild(element); // Remove the element from the DOM
+            }
+        });
+    }
+
+    // Function to click on contestants based on XPath expressions
+    function clickContestants() {
+        var contestant1 = document.evaluate(contestant1XPath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+        var contestant2 = document.evaluate(contestant2XPath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+        if (contestant1 && contestant2) {
+            contestant1.click(); // Click contestant 1
+            contestant2.click(); // Click contestant 2
+        }
+    }
+
+    // Function to click the button based on XPath expression
+    function clickButton() {
+        var button = document.evaluate(buttonXPath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+        if (button) {
+            button.click(); // Click the button
+        }
+    }
+
+    // Call the bypassElements function when the page loads or reloads
+    window.addEventListener('load', function() {
+        bypassElements();
+        clickContestants(); // Automatically select contestants
+        setInterval(clickButton, 100); // Click the button continuously at 100 milliseconds interval
+    });
+    window.addEventListener('DOMContentLoaded', function() {
+        bypassElements();
+        clickContestants(); // Automatically select contestants
+        setInterval(clickButton, 100); // Click the button continuously at 100 milliseconds interval
+    });
+})();
